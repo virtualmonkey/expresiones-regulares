@@ -1,0 +1,17 @@
+{
+  "type": "module",
+  "name": "automatas-project",
+  "version": "1.0.0",
+  "description": "Automatas project for programming languages design",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Luis Urbina",
+  "license": "ISC",
+  "dependencies": {
+    "cytoscape": "^3.21.0",
+    "lodash": "^4.17.21",
+    "prompt-sync": "^4.1.6"
+  }
+}
