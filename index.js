@@ -1,8 +1,22 @@
-import NDFA from './nonDeterministicFiniteAutomata/NDFA.js';
-import cytoscape from 'cytoscape';
+import promptSync from 'prompt-sync';
+import { spawn } from 'child_process';
+import NDFA from './NDFA/NDFA.js';
 
-const ndfa = new NDFA();
-const { automata, startEndNodes } = ndfa.getNDFA("(a|b)*.a.b.b")
+const prompt = promptSync();
 
-console.log(automata);
-console.log(startEndNodes);
+while (true){
+  console.log("\n+++ Analizador de expresiones regulares +++");
+  console.log("Ingrese una opción del menú: \n");
+  console.log("1. Construir un AFN dada una expresión regular \n");
+  const menuSelection = prompt(">> ");
+
+  if(menuSelection === "1"){
+    const regex = prompt("Ingrese la expresión regular >> ");
+    const ndfa = new NDFA();
+    const { automata, startEndNodes } = ndfa.getNDFA(regex);
+    console.log(automata);
+    console.log(startEndNodes);
+  } else {
+    break;
+  }
+}
