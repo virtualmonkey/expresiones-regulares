@@ -17,7 +17,10 @@ while (true){
 
     const dfa = new NDFAToDFA();
 
-    const { dfaFinalAutomata, dfaStartEndNodes } = dfa.getDFA(automata, startEndNodes);
+    const { dfaFinalAutomata, dfaStartEndNodes } = dfa.getDFA(automata.sort((a,b) => {
+      return a[0] - b[0]
+    }), startEndNodes)
+
   }
 
   else if (menuSelection == "2"){
