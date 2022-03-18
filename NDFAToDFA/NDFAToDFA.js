@@ -1,3 +1,4 @@
+import first from 'lodash/first.js';
 import { constants } from '../utils/constants.js'
 
 export default class NDFAToDFA {
@@ -6,6 +7,7 @@ export default class NDFAToDFA {
     this.startEndNodes = null;
     this.dfaFinalAutomata = null;
     this.dfaStartEndNodes = null;
+    this.stringToValidate = null;
   }
 
   getSymbols(automata){
@@ -131,8 +133,8 @@ export default class NDFAToDFA {
   
     const dfaStartEndNodes = [];
   
-    for(let i = 1; i < newStartEndNodes.length; i++){
-      dfaStartEndNodes.push([newStartEndNodes[0], newStartEndNodes[i]]);
+    for(let i = 0; i < newStartEndNodes.length; i++){
+      if(newStartEndNodes[0] !== newStartEndNodes[i]) dfaStartEndNodes.push([newStartEndNodes[0], newStartEndNodes[i]]);
     }
   
     return {
@@ -151,5 +153,29 @@ export default class NDFAToDFA {
     this.dfaStartEndNodes = dfaStartEndNodes;
 
     return { dfaFinalAutomata, dfaStartEndNodes }
+  }
+
+  validateString(string){
+    this.stringToValidate = string;
+
+    let start = first(first(this.dfaStartEndNodes));
+
+    for (let character of this.stringToValidate.split("")){
+      let possibleMovements = [];
+      try {
+        possibleMovements = this.move(start, character, this.dfaFinalAutomata);
+        start = first([...possibleMovements]);
+      } catch(err){
+        return false;
+      }
+    }
+    
+    for (let startEndNode of this.dfaStartEndNodes){
+      if (start == startEndNode[1]){
+        return true;
+      }
+    }
+
+    return false;
   }
 }

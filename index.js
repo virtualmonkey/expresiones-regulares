@@ -5,21 +5,35 @@ import NDFAToDFA from './NDFAToDFA/NDFAToDFA.js'
 const prompt = promptSync();
 
 while (true){
-  console.log("\n+++ Analizador de expresiones regulares +++");
-  console.log("Ingrese una opción del menú: \n");
+  console.log("\n-------------------------------------------");
+  console.log("+++ Analizador de expresiones regulares +++");
+  console.log("-------------------------------------------");
+  console.log("\nIngrese una opción del menú: \n");
   console.log("1. Construir un AFD a partir de un AFN construido a través de una expresión regular \n2. Salir\n");
   const menuSelection = prompt(">> ");
 
   if(menuSelection === "1"){
-    const regex = prompt("Ingrese la expresión regular >> ");
-    const ndfa = new NDFA();
-    const { automata, startEndNodes } = ndfa.getNDFA(regex);
+    const r = prompt("Ingrese la expresión regular >> ");
 
-    const dfa = new NDFAToDFA();
+    const rClean = r.replace(/\s+/g, '')
+    
+    const ndfaInstance = new NDFA();
+    const ndfa = ndfaInstance.getNDFA(rClean);
 
-    const { dfaFinalAutomata, dfaStartEndNodes } = dfa.getDFA(automata.sort((a,b) => {
+    const dfaInstance = new NDFAToDFA();
+    const dfa = dfaInstance.getDFA(ndfa.automata.sort((a,b) => {
       return a[0] - b[0]
-    }), startEndNodes)
+    }), ndfa.startEndNodes)
+
+    const w = prompt("Ingrese la cadena a validar >> ");
+
+    const result = dfaInstance.validateString(w);
+
+    if (!!result){
+      console.log("\nLa cadena w si pertenece al lenguaje generado por el AF(L(r))!")
+    } else {
+      console.log("\nLa cadena w no pertenece al lenguaje generado por el AF(L(r))!")
+    }
   }
 
   else if (menuSelection == "2"){
