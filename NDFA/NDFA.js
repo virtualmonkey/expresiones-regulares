@@ -18,16 +18,16 @@ export default class NDFA {
   replacePositiveClosureForKleenClosure(string) {
     let pile = [];
     let temp = [];
-    let pointer = 0;
   
     for (let i = 0; i < string.length; i++) {
       if (string[i] === constants.POSITIVE_CLOSURE){
-        pointer++;
-  
+        
+        // If current character is a positive closure that affects just one term (no parenthesis)
         if (string[i] === constants.POSITIVE_CLOSURE && last(pile) !== constants.CLOSING_PARENTHESIS){
           let reachedEnd = true;
           let stackFinalIndex = pile.length - 1;
-    
+
+          // loop over pile in descending order until we find a closing parenthesis or a concat
           while (reachedEnd === true && stackFinalIndex !== -1){
             if (pile[stackFinalIndex] === constants.CLOSING_PARENTHESIS || pile[stackFinalIndex] === constants.CONCAT) {
               pile.pop();
@@ -37,8 +37,8 @@ export default class NDFA {
             }
             stackFinalIndex--;
           }
-          pointer++;
-  
+          
+          // Add the replacement of expression+ for expression.expression*
           if (string[i] === constants.POSITIVE_CLOSURE){
             const reversedString = reverse(temp).join("");
             pile.push(
@@ -51,14 +51,16 @@ export default class NDFA {
               + constants.KLEEN_CLOSURE
               + constants.CLOSING_PARENTHESIS.toString()
             );
-            pointer++;
+            
           }
           temp = [];
-  
+          
+        // If current character is a positive closure that affects a complex term with parenthesis
         } else {
           let reachedEnd = true;
           let stackFinalIndex = pile.length - 1;
   
+          // loop overt pile until we find the corresponding open parenthesis
           while (reachedEnd === true){
             if (pile[stackFinalIndex] === constants.OPEN_PARENTHESIS){
               temp.push(constants.OPEN_PARENTHESIS);
@@ -69,7 +71,8 @@ export default class NDFA {
             }
             stackFinalIndex--;
           }
-  
+
+          // Add the replacement of (expression)+ for (expression).(expression)*  
           if (string[i] === constants.POSITIVE_CLOSURE){
             const reversedString = reverse(temp).join("");
             pile.push(
@@ -82,7 +85,6 @@ export default class NDFA {
               + constants.KLEEN_CLOSURE
               .toString()
             );
-            pointer++;
           }
           temp = [];
         }
@@ -99,16 +101,15 @@ export default class NDFA {
   replaceZeroOrOneForOrEpsilon(string) {
     let pile = [];
     let temp = [];
-    let pointer = 0;
   
     for (let i = 0; i < string.length; i++) {
-      if (string[i] === constants.ZERO_OR_ONE){
-        pointer++;
-  
+      if (string[i] === constants.ZERO_OR_ONE){  
+        // If current character is a zero or one that affects just one term (no parenthesis)
         if (string[i] === constants.ZERO_OR_ONE && last(pile) !== constants.CLOSING_PARENTHESIS){
           let reachedEnd = true;
           let stackFinalIndex = pile.length - 1;
-    
+          
+          // loop over pile in descending order until we find a closing parenthesis or a concat
           while (reachedEnd === true && stackFinalIndex !== -1){
             if (pile[stackFinalIndex] === constants.CLOSING_PARENTHESIS || pile[stackFinalIndex] === constants.CONCAT) {
               pile.pop();
@@ -118,8 +119,8 @@ export default class NDFA {
             }
             stackFinalIndex--;
           }
-          pointer++;
-  
+          
+          // Add the replacement of expression? for expression|epsilon*
           if (string[i] === constants.ZERO_OR_ONE){
             const reversedString = reverse(temp).join("");
             pile.push(
@@ -130,14 +131,15 @@ export default class NDFA {
               + constants.CLOSING_PARENTHESIS
               .toString()
             );
-            pointer++;
+            
           }
           temp = [];
-  
+        // If current character is a positive closure that affects a complex term with parenthesis
         } else {
           let reachedEnd = true;
           let stackFinalIndex = pile.length - 1;
   
+          // loop overt pile until we find the corresponding open parenthesis
           while (reachedEnd === true){
             if (pile[stackFinalIndex] === constants.OPEN_PARENTHESIS){
               temp.push(constants.OPEN_PARENTHESIS);
@@ -148,7 +150,8 @@ export default class NDFA {
             }
             stackFinalIndex--;
           }
-  
+          
+          // Add the replacement of (expression)? for (expression)|epsilon*
           if (string[i] === constants.ZERO_OR_ONE){
             const reversedString = reverse(temp).join("");
             pile.push(
@@ -159,7 +162,7 @@ export default class NDFA {
               + constants.CLOSING_PARENTHESIS
               .toString()
             );
-            pointer++;
+            
           }
           temp = [];
         }
@@ -244,19 +247,19 @@ export default class NDFA {
         nodeNumber += 2;
       } else if (symbol === constants.OR){
         // base automatas
-        const state0 = pile.pop();
-        const state1 = pile.pop();
+        const node0 = pile.pop();
+        const node1 = pile.pop();
   
         // Add new tail of the automata and join it via epsilon to the tails of the base automatas
-        const state2 =  [nodeNumber, constants.EPSILON, startEndNodes[startEndNodes.length - 2][0]];
-        const state3 = [nodeNumber,constants.EPSILON,startEndNodes[startEndNodes.length - 1][0]];
+        const node2 =  [nodeNumber, constants.EPSILON, startEndNodes[startEndNodes.length - 2][0]];
+        const node3 = [nodeNumber,constants.EPSILON,startEndNodes[startEndNodes.length - 1][0]];
   
         // Add a new head of the automata by joining the heads of the bese automatas as tails of the new node
-        const state4 = [startEndNodes[startEndNodes.length - 2][1], constants.EPSILON, nodeNumber+1];
-        const state5 = [startEndNodes[startEndNodes.length - 1][1], constants.EPSILON, nodeNumber+1]
+        const node4 = [startEndNodes[startEndNodes.length - 2][1], constants.EPSILON, nodeNumber+1];
+        const node5 = [startEndNodes[startEndNodes.length - 1][1], constants.EPSILON, nodeNumber+1]
   
         // Add all to the pile
-        pile.push([state0, state1, state2, state3, state4, state5]);
+        pile.push([node0, node1, node2, node3, node4, node5]);
   
         let initialNode = nodeNumber;
         let finalNode = nodeNumber + 1;
@@ -272,29 +275,29 @@ export default class NDFA {
         let finalNode = startEndNodes[startEndNodes.length-1][1];
   
         // Add the node at the beginning of the new automata and link it to the inital node
-        const state0 = [nodeNumber, constants.EPSILON, initialNode];
+        const node0 = [nodeNumber, constants.EPSILON, initialNode];
   
         // Add an epsilon edge between the final node and the initial one
-        const state1 = [finalNode, constants.EPSILON, initialNode];
+        const node1 = [finalNode, constants.EPSILON, initialNode];
   
         // initial node is now the node of the very beginning we just added
         initialNode = nodeNumber;
         nodeNumber += 1;
   
         // Add an epsilon edge between the finalNode of our automata and a new one (the acceptance node)
-        const state2 = [finalNode, constants.EPSILON, nodeNumber];
+        const node2 = [finalNode, constants.EPSILON, nodeNumber];
   
         // Add an epsilon edge from the very beginning to the acceptance node
-        const state3 = [initialNode, constants.EPSILON, nodeNumber];
+        const node3 = [initialNode, constants.EPSILON, nodeNumber];
   
         // Our final node is the last node we added
         finalNode = nodeNumber;
   
         // Get our final node from the previous step
-        const state4 = pile.pop();
+        const node4 = pile.pop();
   
         // Add all nodes in order
-        pile.push([state4, state0, state1 ,state2, state3]);
+        pile.push([node4, node0, node1 ,node2, node3]);
   
         // remove previous startEndNodes
         startEndNodes.pop();

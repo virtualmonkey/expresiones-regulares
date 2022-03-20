@@ -14,7 +14,7 @@ export default class NDFAToDFA {
     const symbols = [];
   
     for (let transition of automata){
-      if (transition[1] !== "ε"){
+      if (transition[1] !== constants.EPSILON){
         if (!symbols.includes(transition[1])){
           symbols.push(transition[1]);
         }
@@ -28,9 +28,7 @@ export default class NDFAToDFA {
     const possibleMoves = [];
   
     for (let state of automata){
-      if (state[0] === initialState && state[1] === symbol){
-        possibleMoves.push(state);
-      }
+      if (state[0] === initialState && state[1] === symbol) possibleMoves.push(state);
     }
   
     return possibleMoves;
@@ -44,15 +42,13 @@ export default class NDFAToDFA {
   
     if (listOfStates instanceof Array){
       for (let state of listOfStates){
-        const possibleMoves = this.getPossibleMoves(state, "ε", automata);
+        const possibleMoves = this.getPossibleMoves(state, constants.EPSILON, automata);
   
-        for (let possibleMove of possibleMoves){
-          if (!possibleMoves.includes(possibleMove[2])){
-            listOfStates.push(possibleMove[2])
-          }
-        }
+        for (let possibleMove of possibleMoves) listOfStates.push(possibleMove[2]);
       }
     }
+
+    listOfStates.filter((item, index) => listOfStates.indexOf(item) === index);
   
     return new Set(listOfStates);
   }
@@ -63,11 +59,11 @@ export default class NDFAToDFA {
   
     for (let state of listOfStates){
       const moves = this.getPossibleMoves(state, expresion, automata);
-      for (let possibleMove of moves){
-        if (!possibleMoves.includes(possibleMove[2])) possibleMoves.push(possibleMove[2])
-      }
+      for (let possibleMove of moves) possibleMoves.push(possibleMove[2])
     }
   
+    possibleMoves.filter((item, index) => possibleMoves.indexOf(item) === index);
+    
     return new Set(possibleMoves);
   }
 

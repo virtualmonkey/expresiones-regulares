@@ -13,7 +13,7 @@ while (true){
   const menuSelection = prompt(">> ");
 
   if(menuSelection === "1"){
-    const r = prompt("Ingrese la expresión regular >> ");
+    const r = prompt("Ingrese la expresión regular r >> ");
 
     const rClean = r.replace(/\s+/g, '')
     
