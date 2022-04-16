@@ -21,9 +21,11 @@ while (true){
     const ndfa = ndfaInstance.getNDFA(rClean);
 
     const dfaInstance = new NDFAToDFA();
-    const dfa = dfaInstance.getDFA(ndfa.automata.sort((a,b) => {
-      return a[0] - b[0]
-    }), ndfa.startEndNodes)
+
+    const dfa = dfaInstance.getDFA(ndfa.automata, ndfa.startEndNodes)
+
+    console.log("dfaFinalAutomata ", dfa.dfaFinalAutomata);
+    console.log("dfaStartEndNodes ", dfa.dfaStartEndNodes)
 
     const w = prompt("Ingrese la cadena a validar >> ");
 

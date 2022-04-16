@@ -18,6 +18,7 @@ export default class NDFA {
   replacePositiveClosureForKleenClosure(string) {
     let pile = [];
     let temp = [];
+    let endCharacter = "";
   
     for (let i = 0; i < string.length; i++) {
       if (string[i] === constants.POSITIVE_CLOSURE){
@@ -29,8 +30,8 @@ export default class NDFA {
 
           // loop over pile in descending order until we find a closing parenthesis or a concat
           while (reachedEnd === true && stackFinalIndex !== -1){
-            if (pile[stackFinalIndex] === constants.CLOSING_PARENTHESIS || pile[stackFinalIndex] === constants.CONCAT) {
-              pile.pop();
+            if (pile[stackFinalIndex] === constants.CONCAT || pile[stackFinalIndex] === constants.OR || pile[stackFinalIndex] === constants.OPEN_PARENTHESIS) {
+              endCharacter = pile.pop();
               reachedEnd = false;
             } else {
               temp.push(pile.pop());
@@ -42,7 +43,8 @@ export default class NDFA {
           if (string[i] === constants.POSITIVE_CLOSURE){
             const reversedString = reverse(temp).join("");
             pile.push(
-              constants.OPEN_PARENTHESIS
+              endCharacter
+              + constants.OPEN_PARENTHESIS
               + reversedString
               + constants.CLOSING_PARENTHESIS
               + constants.CONCAT
@@ -51,7 +53,6 @@ export default class NDFA {
               + constants.KLEEN_CLOSURE
               + constants.CLOSING_PARENTHESIS.toString()
             );
-            
           }
           temp = [];
           
@@ -101,6 +102,7 @@ export default class NDFA {
   replaceZeroOrOneForOrEpsilon(string) {
     let pile = [];
     let temp = [];
+    let endCharacter = "";
   
     for (let i = 0; i < string.length; i++) {
       if (string[i] === constants.ZERO_OR_ONE){  
@@ -111,8 +113,8 @@ export default class NDFA {
           
           // loop over pile in descending order until we find a closing parenthesis or a concat
           while (reachedEnd === true && stackFinalIndex !== -1){
-            if (pile[stackFinalIndex] === constants.CLOSING_PARENTHESIS || pile[stackFinalIndex] === constants.CONCAT) {
-              pile.pop();
+            if (pile[stackFinalIndex] === constants.CONCAT || pile[stackFinalIndex] === constants.OR || pile[stackFinalIndex] === constants.OPEN_PARENTHESIS) {
+              endCharacter = pile.pop();
               reachedEnd = false;
             } else {
               temp.push(pile.pop());
@@ -124,7 +126,8 @@ export default class NDFA {
           if (string[i] === constants.ZERO_OR_ONE){
             const reversedString = reverse(temp).join("");
             pile.push(
-              constants.OPEN_PARENTHESIS
+              endCharacter
+              + constants.OPEN_PARENTHESIS
               + reversedString
               + constants.OR
               + constants.EPSILON
@@ -207,6 +210,7 @@ export default class NDFA {
                     orderedRegex.push(last(pile));
                     pile.pop();
                     stackLastIndex--;
+                    if (pile.length == 0) break;
                   }
                   pile.push(string[i]);
                 } else {
@@ -228,7 +232,8 @@ export default class NDFA {
   
     pile.length != 0 ? orderedRegex = concat(orderedRegex, reverse(pile)) : orderedRegex;
     
-    return orderedRegex;
+    const orderedCleanRegex = orderedRegex.filter((char) => char !== "(" && char !== ")");
+    return orderedCleanRegex;
   }
   
   buildNonDeterministicFiniteAutomata(expression) {
@@ -344,10 +349,14 @@ export default class NDFA {
         pile.push([firstNode, secondNode]);
       }
     }
-  
     const automata = functions.simplifyArray(pile, []);
+
+    const sortedAutomata = automata.sort((a,b) => {
+      return a[0] - b[0]
+    })
+
     return {
-      "automata": automata,
+      "automata": sortedAutomata,
       "startEndNodes": startEndNodes
     };
   }

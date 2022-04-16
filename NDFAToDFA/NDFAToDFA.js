@@ -1,5 +1,5 @@
 import first from 'lodash/first.js';
-import { constants } from '../utils/constants.js'
+import { constants } from '../utils/constants.js';
 
 export default class NDFAToDFA {
   constructor(){
@@ -30,21 +30,23 @@ export default class NDFAToDFA {
     for (let state of automata){
       if (state[0] === initialState && state[1] === symbol) possibleMoves.push(state);
     }
-  
+
     return possibleMoves;
   }
   
-  eClosureSorT(sOrT, automata){  
+  eClosureSorT(sOrT, automata){
     let listOfStates = [];
   
     if (typeof sOrT === "number") listOfStates.push(sOrT);
     else listOfStates = [...sOrT];
-  
+
     if (listOfStates instanceof Array){
+
       for (let state of listOfStates){
         const possibleMoves = this.getPossibleMoves(state, constants.EPSILON, automata);
-  
-        for (let possibleMove of possibleMoves) listOfStates.push(possibleMove[2]);
+        for (let possibleMove of possibleMoves){
+          if(!listOfStates.includes(possibleMove[2])) listOfStates.push(possibleMove[2]);
+        };
       }
     }
 
@@ -86,15 +88,15 @@ export default class NDFAToDFA {
 
   subsetsAlgorithm(automata, startEndNodes){
     const symbols = this.getSymbols(automata)
-  
+
     const Dstates = [];
     let finalAutomata = [];
     Dstates.push(this.eClosureSorT(startEndNodes[0][0], automata));
-  
+
     let newStartEndNodes = [...Dstates];
   
-    let currentState = 0;  
-  
+    let currentState = 0;
+
     while (currentState < Dstates.length){
       for (let symbol of symbols){
   
