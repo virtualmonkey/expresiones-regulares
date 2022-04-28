@@ -2,7 +2,9 @@ import promptSync from 'prompt-sync';
 import NDFA from './NDFA/NDFA.js';
 import NDFAToDFA from './NDFAToDFA/NDFAToDFA.js';
 import DFA from './DFA/DFA.js';
-import util from 'util';
+import { functions }  from './utils/functions.js';
+import * as fs from 'fs';
+
 
 const prompt = promptSync();
 
@@ -29,10 +31,16 @@ while (true){
     console.log("dfaFinalAutomata ", dfa.dfaFinalAutomata);
     console.log("dfaStartEndNodes ", dfa.dfaStartEndNodes);
 
+    const jsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(dfa.dfaFinalAutomata, dfa.dfaStartEndNodes));
+
+    fs.writeFileSync('NDFAtoDFA.json', jsonAutomata, 'utf8');
+
+    console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicNDFAToDFA.py' en otra terminal para visualizarlo");
+
     let validateString = true;
 
     while (validateString){
-      const w = prompt("Ingrese la cadena a validar >> ");
+      const w = prompt("\n Ingrese la cadena a validar >> ");
 
       const result = dfaInstance.validateString(w);
   
@@ -53,7 +61,7 @@ while (true){
 
   else if (menuSelection == "2"){
     
-    const r = prompt("Ingrese la expresión regular r >> ");
+    const r = prompt("\n Ingrese la expresión regular r >> ");
 
     const rClean = r.replace(/\s+/g, '');
 
@@ -61,8 +69,14 @@ while (true){
 
     const dfa = dfaInstance.getDirectDFA(rClean);
 
-    // console.log("directDFA -> ", dfa.directDFA);
-    // console.log("directDFAStartEndNodes -> ", dfa.directDFAStartEndNodes);
+    console.log("directDFA -> ", dfa.directDFA);
+    console.log("directDFAStartEndNodes -> ", dfa.directDFAStartEndNodes);
+
+    const jsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(dfa.directDFA, dfa.directDFAStartEndNodes));
+
+    fs.writeFileSync('directDFA.json', jsonAutomata, 'utf8');
+
+    console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicDirectDFA.py' en otra terminal para visualizarlo");
 
     let validateString = true;
 
