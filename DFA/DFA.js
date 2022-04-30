@@ -347,9 +347,9 @@ export default class DFA {
 
         for (let singleValue of state.value) {
           if (singleValue.head === symbol) {
-            const TreesRelatedToPositionSingleValue = table[singleValue.getUniqueTree()];
+            const TreesRelatedToSingleValue = table[singleValue.getUniqueTree()];
 
-            for (let tree of TreesRelatedToPositionSingleValue) {
+            for (let tree of TreesRelatedToSingleValue) {
               if (!valueTreesUUIDs.includes(tree.getUniqueTree())) {
                 valueTrees.push(tree);
                 valueTreesUUIDs.push(tree.getUniqueTree());
@@ -391,11 +391,11 @@ export default class DFA {
 
     for (let state of rawAutomata) {
       for (let transition of state.transitions) {
-        automata.push(["s"+state.id.toString(), transition.symbol, "s"+transition.id.toString()])
+        automata.push([state.id.toString(), transition.symbol, transition.id.toString()])
       }
 
       if (state.isAcceptanceState) {
-        startEndNodes.push(["s0", "s"+state.id.toString()])
+        startEndNodes.push(["0", state.id.toString()])
       }
     }
 
@@ -433,7 +433,6 @@ export default class DFA {
     }
   }
 
-  
   getPossibleMoves(initialState, symbol, automata) {
     const possibleMoves = [];
 
