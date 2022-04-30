@@ -1,12 +1,27 @@
 digraph "DFA by Thompson's method" {
 	rankdir=LR size=10
 	node [fillcolor="#26C485" shape=circle style=filled]
-	C
-	D
+	sF
+	sG
+	sH
+	sI
 	node [fillcolor="#f64747" shape=circle style=filled]
-	A -> B [label=b]
-	A -> C [label=a]
-	B -> B [label=b]
-	B -> C [label=a]
-	C -> D [label=b]
+	sA -> sB [label=0]
+	sA -> sC [label=1]
+	sB -> sD [label=0]
+	sB -> sE [label=1]
+	sC -> sB [label=0]
+	sC -> sC [label=1]
+	sD -> sF [label=0]
+	sD -> sG [label=1]
+	sE -> sH [label=0]
+	sE -> sI [label=1]
+	sF -> sF [label=0]
+	sF -> sG [label=1]
+	sG -> sH [label=0]
+	sG -> sI [label=1]
+	sH -> sD [label=0]
+	sH -> sE [label=1]
+	sI -> sB [label=0]
+	sI -> sC [label=1]
 }

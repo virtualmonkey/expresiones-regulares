@@ -20,41 +20,47 @@ while (true){
     const r = prompt("Ingrese la expresión regular r >> ");
 
     const rClean = r.replace(/\s+/g, '')
-    
-    const ndfaInstance = new NDFA();
-    const ndfa = ndfaInstance.getNDFA(rClean);
 
-    const dfaInstance = new NDFAToDFA();
+    const errors = functions.getStringErrors(rClean);
 
-    const dfa = dfaInstance.getDFA(ndfa.automata, ndfa.startEndNodes)
-
-    console.log("dfaFinalAutomata ", dfa.dfaFinalAutomata);
-    console.log("dfaStartEndNodes ", dfa.dfaStartEndNodes);
-
-    const jsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(dfa.dfaFinalAutomata, dfa.dfaStartEndNodes));
-
-    fs.writeFileSync('NDFAtoDFA.json', jsonAutomata, 'utf8');
-
-    console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicNDFAToDFA.py' en otra terminal para visualizarlo");
-
-    let validateString = true;
-
-    while (validateString){
-      const w = prompt("\n Ingrese la cadena a validar >> ");
-
-      const result = dfaInstance.validateString(w);
+    if (errors.length === 0){
+      const ndfaInstance = new NDFA();
+      const ndfa = ndfaInstance.getNDFA(rClean);
   
-      if (!!result){
-        console.log("\nLa cadena w si pertenece al lenguaje generado por el AF(L(r))!")
-      } else {
-        console.log("\nLa cadena w no pertenece al lenguaje generado por el AF(L(r))!")
+      const dfaInstance = new NDFAToDFA();
+  
+      const dfa = dfaInstance.getDFA(ndfa.automata, ndfa.startEndNodes)
+  
+      const jsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(dfa.dfaFinalAutomata, dfa.dfaStartEndNodes));
+  
+      fs.writeFileSync('NDFAtoDFA.json', jsonAutomata, 'utf8');
+  
+      console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicNDFAToDFA.py' en otra terminal para visualizarlo");
+  
+      let validateString = true;
+  
+      while (validateString){
+        const w = prompt("\n Ingrese la cadena a validar >> ");
+  
+        const result = dfaInstance.validateString(w);
+    
+        if (!!result){
+          console.log("\nLa cadena w si pertenece al lenguaje generado por el AF(L(r))!")
+        } else {
+          console.log("\nLa cadena w no pertenece al lenguaje generado por el AF(L(r))!")
+        }
+  
+        let keepGoing = prompt("Desea validar otra cadena? y/n >> ");
+        switch(keepGoing){
+          case "n":
+            validateString = false;
+            break;
+        }
       }
-
-      let keepGoing = prompt("Desea validar otra cadena? y/n >> ");
-      switch(keepGoing){
-        case "n":
-          validateString = false;
-          break;
+    } else {
+      console.log("\nERROR: La expresión regular tiene los siguientes errores:\n")
+      for (let error of errors) {
+        console.log(`X ${error} \n`)
       }
     }
   }
@@ -65,37 +71,43 @@ while (true){
 
     const rClean = r.replace(/\s+/g, '');
 
-    const dfaInstance = new DFA();
+    const errors = functions.getStringErrors(rClean);
 
-    const dfa = dfaInstance.getDirectDFA(rClean);
+    if (errors.length === 0){
+      const dfaInstance = new DFA();
 
-    console.log("directDFA -> ", dfa.directDFA);
-    console.log("directDFAStartEndNodes -> ", dfa.directDFAStartEndNodes);
-
-    const jsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(dfa.directDFA, dfa.directDFAStartEndNodes));
-
-    fs.writeFileSync('directDFA.json', jsonAutomata, 'utf8');
-
-    console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicDirectDFA.py' en otra terminal para visualizarlo");
-
-    let validateString = true;
-
-    while (validateString){
-      const w = prompt("Ingrese la cadena a validar >> ");
-
-      const result = dfaInstance.validateString(w);
+      const dfa = dfaInstance.getDirectDFA(rClean);
   
-      if (!!result){
-        console.log("\nLa cadena w si pertenece al lenguaje generado por el AF(L(r))!")
-      } else {
-        console.log("\nLa cadena w no pertenece al lenguaje generado por el AF(L(r))!")
+      const jsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(dfa.directDFA, dfa.directDFAStartEndNodes));
+  
+      fs.writeFileSync('directDFA.json', jsonAutomata, 'utf8');
+  
+      console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicDirectDFA.py' en otra terminal para visualizarlo");
+  
+      let validateString = true;
+  
+      while (validateString){
+        const w = prompt("Ingrese la cadena a validar >> ");
+  
+        const result = dfaInstance.validateString(w);
+    
+        if (!!result){
+          console.log("\nLa cadena w si pertenece al lenguaje generado por el AF(L(r))!")
+        } else {
+          console.log("\nLa cadena w no pertenece al lenguaje generado por el AF(L(r))!")
+        }
+  
+        let keepGoing = prompt("Desea validar otra cadena? y/n >> ");
+        switch(keepGoing){
+          case "n":
+            validateString = false;
+            break;
+        }
       }
-
-      let keepGoing = prompt("Desea validar otra cadena? y/n >> ");
-      switch(keepGoing){
-        case "n":
-          validateString = false;
-          break;
+    } else {
+      console.log("\nERROR: La expresión regular tiene los siguientes errores:\n")
+      for (let error of errors) {
+        console.log(`X ${error} \n`)
       }
     }
   }
