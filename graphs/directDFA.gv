@@ -5,6 +5,8 @@ digraph "DFA by direct method" {
 	s5
 	s6
 	s7
+	node [fillcolor="#8a8aff" shape=circle style=filled]
+	s0
 	node [fillcolor="#f64747" shape=circle style=filled]
 	s0 -> s1 [label=0]
 	s0 -> s0 [label=1]

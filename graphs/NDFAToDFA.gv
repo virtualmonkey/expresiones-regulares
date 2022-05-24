@@ -5,6 +5,8 @@ digraph "DFA by Thompson's method" {
 	sG
 	sH
 	sI
+	node [fillcolor="#8a8aff" shape=circle style=filled]
+	sA
 	node [fillcolor="#f64747" shape=circle style=filled]
 	sA -> sB [label=0]
 	sA -> sC [label=1]

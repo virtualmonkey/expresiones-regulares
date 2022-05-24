@@ -31,10 +31,12 @@ function prepareAutomatForGraphic(transitions, startEndNodes){
   });
 
   const acceptanceStates = uniq(startEndNodes.map(startEndNode => "s"+startEndNode[1]));
+  const initialState = uniq(startEndNodes.map(startEndNode => "s"+startEndNode[0]))
 
   return {
     automata,
-    acceptanceStates
+    acceptanceStates,
+    initialState
   }
 }
 

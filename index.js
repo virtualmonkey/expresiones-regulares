@@ -26,16 +26,22 @@ while (true){
     if (errors.length === 0){
       const ndfaInstance = new NDFA();
       const ndfa = ndfaInstance.getNDFA(rClean);
+
+      const ndfaJsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(ndfa.automata, ndfa.startEndNodes));
+
+      fs.writeFileSync('NDFA.json', ndfaJsonAutomata, 'utf-8');
+
+      console.log("\n El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicNDFA.py' en otra terminal para visualizarlo \n");
   
       const dfaInstance = new NDFAToDFA();
   
-      const dfa = dfaInstance.getDFA(ndfa.automata, ndfa.startEndNodes)
-  
+      const dfa = dfaInstance.getDFA(ndfa.automata, ndfa.startEndNodes);
+
       const jsonAutomata = JSON.stringify(functions.prepareAutomatForGraphic(dfa.dfaFinalAutomata, dfa.dfaStartEndNodes));
   
       fs.writeFileSync('NDFAtoDFA.json', jsonAutomata, 'utf8');
   
-      console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicNDFAToDFA.py' en otra terminal para visualizarlo");
+      console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicNDFAToDFA.py' en otra terminal para visualizarlo \n");
   
       let validateString = true;
   
@@ -82,7 +88,7 @@ while (true){
   
       fs.writeFileSync('directDFA.json', jsonAutomata, 'utf8');
   
-      console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicDirectDFA.py' en otra terminal para visualizarlo");
+      console.log("El automata ha sido guardado! Ahora puede correr 'python3 graphicUtils/graphicDirectDFA.py' en otra terminal para visualizarlo \n");
   
       let validateString = true;
   
